@@ -1,0 +1,5 @@
+fire
+numpy
+tiktoken
+torch
+wandb

@@ -1,0 +1,7 @@
+.DS_Store
+__pycache__
+episode1/images
+episode1/videos
+episode2/data
+episode2/ckpts
+episode2/wandb
