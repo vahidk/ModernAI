@@ -1,4 +1,5 @@
 import numpy as np
+import torch
 from matplotlib import pyplot as plt
 
 
@@ -150,3 +151,28 @@ def visualize_data(
     plt.ylim(map["height"], 0)
     plt.tight_layout()
     plt.show()
+
+
+def split_data(houses, ratio):
+    idx = int(houses["price"].shape[0] * ratio)
+    train = {k: v[:idx] for k, v in houses.items()}
+    test = {k: v[idx:] for k, v in houses.items()}
+    return train, test
+
+
+def preprocess_inputs(houses):
+    x = np.concatenate([houses["size"][:, None], houses["rooms"][:, None], houses["location"]], axis=-1).astype(
+        np.float32
+    )
+    x = (x - x.mean(axis=0, keepdims=True)) / x.std(axis=0, keepdims=True)
+    return torch.from_numpy(x)
+
+
+def preprocess_outputs(prices):
+    y = prices[:, None].astype(np.float32)
+    y = y / 1000.0
+    return torch.from_numpy(y)
+
+
+def preprocess_data(houses):
+    return preprocess_inputs(houses), preprocess_outputs(houses["price"])

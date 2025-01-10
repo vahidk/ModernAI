@@ -49,7 +49,7 @@ def train(
         with torch.autocast("cuda", dtype=torch.bfloat16):
             _, loss = model(x, y)
         if i % logger_steps == 0:
-            logger.log({"train/loss/loss": loss.item()}, step=step + i)
+            logger.log({"train/loss": loss.item()}, step=step + i)
         optimizer.zero_grad()
         loss.backward()
         torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=clip_grad)
@@ -72,7 +72,7 @@ def test(model: nn.Module, loader: torch.utils.data.DataLoader, logger: typing.A
             total_loss += loss.item() * x.size(0)
             count += x.size(0)
     total_loss /= count
-    logger.log({"test/loss/loss": total_loss}, step=step)
+    logger.log({"test/loss": total_loss}, step=step)
 
 
 def save_ckpt(model: nn.Module, step: int):
