@@ -1,4 +1,5 @@
 import logging
+import os
 import typing
 
 import fire
@@ -75,10 +76,11 @@ def test(model: nn.Module, loader: torch.utils.data.DataLoader, logger: typing.A
     logger.log({"test/loss": total_loss}, step=step)
 
 
-def save_ckpt(model: nn.Module, step: int):
+def save_ckpt(model: nn.Module, step: int, output_dir: str = "./ckpts"):
     model = model.module if isinstance(model, torch.nn.parallel.DistributedDataParallel) else model
     model = model._orig_mod if hasattr(model, "_orig_mod") else model
-    torch.save(model.state_dict(), f"./ckpts/model_{step:08d}.pt")
+    os.makedirs(output_dir, exist_ok=True)
+    torch.save(model.state_dict(), os.path.join(output_dir, f"model_{step:08d}.pt"))
 
 
 def main(
